@@ -2,10 +2,7 @@ package com.ll.chatting.domian.chat.chatRoom.controller;
 
 
 import com.ll.chatting.domian.chat.chatRoom.entity.ChatRoom;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +11,10 @@ import java.util.Optional;
 
 @RestController // 창구역할
 @RequestMapping("/api/v1/chat/rooms")
+//CORS 설정. http://cdpn.io에 대해 허용해준다.
+@CrossOrigin(
+        origins = "https://cdpn.io"
+)
 public class ApiV1ChatControllers {
 
     private final List<ChatRoom> chatRooms = new ArrayList<>() {{
@@ -53,4 +54,6 @@ public class ApiV1ChatControllers {
     private Optional<ChatRoom> findById(long id) {
         return  chatRooms.stream().filter(chatRoom -> chatRoom.getId() == id).findFirst();
     }
+
+
 }
