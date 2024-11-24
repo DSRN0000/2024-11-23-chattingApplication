@@ -1,6 +1,8 @@
 package com.ll.chatting.domian.chat.chatMessage.controller;
 
 import com.ll.chatting.domian.chat.chatMessage.entity.ChatMessage;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -94,5 +96,43 @@ public class ApiV1ChatMessageController {
             @PathVariable int chatRoomId
     ) {
         return chatMessagesByRoomId.getOrDefault(chatRoomId, List.of());
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class ChatMessageWriteReqBody{
+        private String writerName;
+        private String content;
+    }
+
+    @PostMapping
+    public ChatMessage writeChatMessage(
+            @PathVariable int chatRoomId,
+            @RequestBody ChatMessageWriteReqBody reqBody
+    ) {
+        return writeChatMessage(chatRoomId, reqBody.writerName, reqBody.content);
+    }
+
+    private ChatMessage writeChatMessage(
+            int chatRoomId,
+            String writerName,
+            String content
+    ) {
+        List<ChatMessage> chatMessages = chatMessagesByRoomId.get(chatRoomId);
+        if (chatMessages == null) {
+            chatMessages = new ArrayList<>();
+            chatMessagesByRoomId.put(chatRoomId, chatMessages);
+        }
+        ChatMessage chatMessage = ChatMessage
+                .builder()
+                .id(chatMessages.size() + 1)
+                .createDate(LocalDateTime.now())
+                .modifyDate(LocalDateTime.now())
+                .chatRoomId(chatRoomId)
+                .writerName(writerName)
+                .content(content)
+                .build();
+        chatMessages.add(chatMessage);
+        return chatMessage;
     }
 }
