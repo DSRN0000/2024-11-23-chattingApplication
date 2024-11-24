@@ -2,6 +2,8 @@ package com.ll.chatting.domian.chat.chatRoom.controller;
 
 
 import com.ll.chatting.domian.chat.chatRoom.entity.ChatRoom;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -50,6 +52,24 @@ public class ApiV1ChatControllers {
 
         return opChatRoom.get();
     }
+    @AllArgsConstructor
+    @Getter
+    public static class ChatCreateReqBody {
+        private String name;
+    }
+
+    @PostMapping
+    public ChatRoom createChatRoom(
+            @RequestBody ChatCreateReqBody reqBody
+    ) {
+        ChatRoom chatRoom = ChatRoom.builder().id(chatRooms.size() + 1).createDate(LocalDateTime.now()).createDate(LocalDateTime.now()).name(reqBody.name).build();
+
+        chatRooms.add(chatRoom);
+
+        return chatRoom;
+    }
+
+
 
     private Optional<ChatRoom> findById(long id) {
         return  chatRooms.stream().filter(chatRoom -> chatRoom.getId() == id).findFirst();
