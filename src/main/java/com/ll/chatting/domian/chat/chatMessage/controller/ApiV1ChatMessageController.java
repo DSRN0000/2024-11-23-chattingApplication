@@ -93,9 +93,17 @@ public class ApiV1ChatMessageController {
     }};
     @GetMapping
     public List<ChatMessage> getChatMessages(
-            @PathVariable int chatRoomId
+            @PathVariable int chatRoomId,
+            @RequestParam(defaultValue = "-1") int afterChatMessageId
     ) {
-        return chatMessagesByRoomId.getOrDefault(chatRoomId, List.of());
+
+        List<ChatMessage> chatMessages = chatMessagesByRoomId.getOrDefault(chatRoomId, List.of());
+        if (afterChatMessageId == -1) {
+            return chatMessages;
+        }
+        return chatMessages.stream()
+                .filter(chatMessage -> chatMessage.getId() > afterChatMessageId)
+                .toList();
     }
 
     @AllArgsConstructor
